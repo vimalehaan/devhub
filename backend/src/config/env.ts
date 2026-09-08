@@ -13,4 +13,9 @@ export const env = {
     user: process.env.DB_USER || "postgres",
     password: process.env.DB_PASSWORD || "",
   },
+  jwtSecret:
+    process.env.JWT_SECRET ||
+    (() => {
+      throw new Error("JWT_SECRET is not configured");
+    })(),
 };

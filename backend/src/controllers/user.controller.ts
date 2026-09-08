@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { createUser, findUserByEmail } from "../services/users.service.js";
+import { createUser, findUserByEmail, findUserById } from "../services/users.service.js";
+import { generateToken } from "../services/auth.service.js";
 
 export const registerUser = async (
   req: Request,
@@ -71,8 +72,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const token = generateToken(user.id);
+
     res.status(200).json({
       message: "Login successful",
+      token,
       user: {
         id: user.id,
         name: user.name,
@@ -85,6 +89,39 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
     res.status(500).json({
       message: "Failed to login",
+    });
+  }
+};
+
+export const getCurrentUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(401).json({
+        message: "Authentication required",
+      });
+      return;
+    }
+
+    const user = await findUserById(req.userId);
+
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    console.error("Get current user error:", error);
+
+    res.status(500).json({
+      message: "Failed to get current user",
     });
   }
 };
