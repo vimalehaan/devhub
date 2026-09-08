@@ -22,9 +22,9 @@ app.get("/api/health", (_req, res) => {
 });
 
 // Start server
-app.listen(env.port, async() => {
+app.listen(env.port, async () => {
   console.log(`DevHub API running on port ${env.port}`);
-  
+
   try {
     await pool.query("SELECT NOW()");
     console.log("Database connected successfully");
