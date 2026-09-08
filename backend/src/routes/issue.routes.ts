@@ -4,6 +4,7 @@ import {
   getIssuesController,
   getIssueController,
   updateIssueController,
+  deleteIssueController,
 } from "../controllers/issue.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 
@@ -20,6 +21,11 @@ router.patch(
   "/projects/:projectId/issues/:issueId",
   authenticate,
   updateIssueController,
+);
+router.delete(
+  "/projects/:projectId/issues/:issueId",
+  authenticate,
+  deleteIssueController,
 );
 
 export default router;

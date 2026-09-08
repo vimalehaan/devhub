@@ -134,3 +134,28 @@ export const updateIssue = async (
 
   return result.rows[0];
 };
+
+export const deleteIssue = async (
+  issueId: number,
+  projectId: number
+) => {
+  const result = await pool.query(
+    `
+    DELETE FROM issues
+    WHERE id = $1
+      AND project_id = $2
+    RETURNING
+      id,
+      project_id,
+      title,
+      description,
+      status,
+      priority,
+      assignee_id,
+      created_at
+    `,
+    [issueId, projectId]
+  );
+
+  return result.rows[0];
+};

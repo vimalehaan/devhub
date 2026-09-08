@@ -5,6 +5,7 @@ import {
   getIssuesByProject,
   getIssueById,
   updateIssue,
+  deleteIssue,
 } from "../services/issue.service.js";
 
 export const createIssueController = async (
@@ -289,6 +290,74 @@ export const updateIssueController = async (
 
     res.status(500).json({
       message: "Failed to update issue",
+    });
+  }
+};
+
+export const deleteIssueController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(401).json({
+        message: "Authentication required",
+      });
+      return;
+    }
+
+    const projectId = Number(req.params.projectId);
+    const issueId = Number(req.params.issueId);
+
+    if (!Number.isInteger(projectId) || projectId <= 0) {
+      res.status(400).json({
+        message: "Invalid project ID",
+      });
+      return;
+    }
+
+    if (!Number.isInteger(issueId) || issueId <= 0) {
+      res.status(400).json({
+        message: "Invalid issue ID",
+      });
+      return;
+    }
+
+    const projectResult = await pool.query(
+      `
+      SELECT id
+      FROM projects
+      WHERE id = $1
+        AND owner_id = $2
+      `,
+      [projectId, req.userId],
+    );
+
+    if (projectResult.rows.length === 0) {
+      res.status(404).json({
+        message: "Project not found",
+      });
+      return;
+    }
+
+    const issue = await deleteIssue(issueId, projectId);
+
+    if (!issue) {
+      res.status(404).json({
+        message: "Issue not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Issue deleted successfully",
+      issue,
+    });
+  } catch (error) {
+    console.error("Delete issue error:", error);
+
+    res.status(500).json({
+      message: "Failed to delete issue",
     });
   }
 };
