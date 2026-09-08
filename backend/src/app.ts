@@ -1,9 +1,8 @@
 import express from "express";
 import cors from "cors";
+import { env } from "./config/env.js";
 
 const app = express();
-
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -18,6 +17,6 @@ app.get("/api/health", (_req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`DevHub API running on port ${PORT}`);
+app.listen(env.port, () => {
+  console.log(`DevHub API running on port ${env.port}`);
 });
