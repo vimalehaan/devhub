@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { env } from "./config/env.js";
+import { pool } from "./config/database.js";
 
 const app = express();
 
@@ -17,6 +18,13 @@ app.get("/api/health", (_req, res) => {
 });
 
 // Start server
-app.listen(env.port, () => {
+app.listen(env.port, async() => {
   console.log(`DevHub API running on port ${env.port}`);
+  
+  try {
+    await pool.query("SELECT NOW()");
+    console.log("Database connected successfully");
+  } catch (error) {
+    console.error("Database connection failed:", error);
+  }
 });
