@@ -3,6 +3,7 @@ import cors from "cors";
 import { env } from "./config/env.js";
 import { pool } from "./config/database.js";
 import userRoutes from "./routes/user.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/projects", projectRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {
