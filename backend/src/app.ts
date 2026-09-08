@@ -4,6 +4,7 @@ import { env } from "./config/env.js";
 import { pool } from "./config/database.js";
 import userRoutes from "./routes/user.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import issueRoutes from "./routes/issue.routes.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api", issueRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {
