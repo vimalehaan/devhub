@@ -1,12 +1,13 @@
 import { useState } from "react";
 import type { SubmitEvent } from "react";
-import { login } from "../services/auth.service";
+import { useAuth } from "../components/AuthContext";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { loginUser } = useAuth();
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -15,12 +16,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const result = await login({
-        email,
-        password,
-      });
-
-      console.log("Login successful:", result);
+      await loginUser(email, password);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
